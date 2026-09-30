@@ -1,0 +1,3 @@
+import 'dotenv/config';
+import { z } from 'zod';
+export const env=z.object({NODE_ENV:z.string().default('development'),PORT:z.coerce.number().default(3000),APP_URL:z.string().default('http://localhost:3000'),MONGODB_URI:z.string(),SHOPIFY_STORE_DOMAIN:z.string(),SHOPIFY_ADMIN_ACCESS_TOKEN:z.string().optional(),SHOPIFY_API_VERSION:z.string().default('2026-07'),META_GRAPH_API_VERSION:z.string().default('v24.0'),META_ACCESS_TOKEN:z.string().optional(),WABA_ID:z.string().optional(),WHATSAPP_PHONE_NUMBER_ID:z.string().optional(),WHATSAPP_VERIFY_TOKEN:z.string(),SHIPROCKET_EMAIL:z.string().optional(),SHIPROCKET_PASSWORD:z.string().optional(),WEBHOOK_SECRET:z.string()}).parse(process.env);

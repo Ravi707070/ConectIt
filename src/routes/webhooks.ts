@@ -1,0 +1,5 @@
+import {Router} from 'express';import crypto from 'node:crypto';import {env} from '../config/env.js';import {Event} from '../models/Event.js';
+export const webhooks=Router();
+webhooks.get('/meta', (req,res)=>{const mode=req.query['hub.mode'];const token=req.query['hub.verify_token'];const challenge=req.query['hub.challenge'];if(mode==='subscribe'&&token===env.WHATSAPP_VERIFY_TOKEN)return res.status(200).send(challenge);return res.sendStatus(403)});
+webhooks.post('/meta',async(req,res)=>{const id=crypto.createHash('sha256').update(JSON.stringify(req.body)).digest('hex');try{await Event.create({eventId:id,source:'meta',type:'whatsapp',payload:req.body});res.sendStatus(200)}catch(e:any){if(e.code===11000)return res.sendStatus(200);res.sendStatus(500)}});
+webhooks.post('/shopify',async(req,res)=>{const id=String(req.headers['x-shopify-webhook-id']||crypto.randomUUID());try{await Event.create({eventId:id,source:'shopify',type:String(req.headers['x-shopify-topic']||'unknown'),payload:req.body});res.sendStatus(200)}catch(e:any){if(e.code===11000)return res.sendStatus(200);res.sendStatus(500)}});
